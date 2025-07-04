@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MemberJpaRepositoryTest {
 
     @Autowired MemberJpaRepository memberJpaRepository;
+    @Autowired MemberRepository memberRepository;
 
     @Test
     void testMember() {
@@ -25,7 +26,7 @@ class MemberJpaRepositoryTest {
         Member savedMember = memberJpaRepository.save(member);
 
         // then
-        Member foundMember = memberJpaRepository.find(savedMember.getId());
+        Member foundMember = memberJpaRepository.findById(savedMember.getId()).get();
         assertEquals(foundMember, member);
         assertEquals(foundMember.getUsername(), member.getUsername());
         assertEquals(foundMember.getId(), member.getId());
@@ -40,8 +41,8 @@ class MemberJpaRepositoryTest {
         memberJpaRepository.save(member2);
 
         // then
-        Member foundMember1 = memberJpaRepository.find(member1.getId());
-        Member foundMember2 = memberJpaRepository.find(member2.getId());
+        Member foundMember1 = memberJpaRepository.findById(member1.getId()).get();
+        Member foundMember2 = memberJpaRepository.findById(member2.getId()).get();
         assertEquals(member1, foundMember1);
         assertEquals(member2, foundMember2);
 
@@ -51,6 +52,29 @@ class MemberJpaRepositoryTest {
         memberJpaRepository.delete(member1);
         memberJpaRepository.delete(member2);
         long deletedCount = memberJpaRepository.count();
+        assertEquals(0, deletedCount);
+    }
+
+    @Test
+    void basicCRUD_2() {
+        // given
+        Member member1 = new Member("member1");
+        Member member2 = new Member("member2");
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        // then
+        Member foundMember1 = memberRepository.findById(member1.getId()).get();
+        Member foundMember2 = memberRepository.findById(member2.getId()).get();
+        assertEquals(member1, foundMember1);
+        assertEquals(member2, foundMember2);
+
+        List<Member> all = memberRepository.findAll();
+        assertEquals(2, all.size());
+
+        memberRepository.delete(member1);
+        memberRepository.delete(member2);
+        long deletedCount = memberRepository.count();
         assertEquals(0, deletedCount);
     }
 }
