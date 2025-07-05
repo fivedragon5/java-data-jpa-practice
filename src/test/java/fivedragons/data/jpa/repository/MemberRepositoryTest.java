@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -27,5 +29,22 @@ class MemberRepositoryTest {
         assertEquals(findMember, member);
         assertEquals(findMember.getUsername(), member.getUsername());
         assertEquals(findMember.getId(), member.getId());
+    }
+
+    @Test
+    void findByUsernameAndAgeGraterThen() {
+        // given
+        Member member1 = new Member("fad", 10);
+        Member member2 = new Member("fad", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        // when
+        List<Member> result = memberRepository.findByUsernameAndAgeGreaterThan("fad", 15);
+
+        // then
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0).getUsername(), "fad");
+        assertEquals(result.get(0).getAge(), 20);
     }
 }
