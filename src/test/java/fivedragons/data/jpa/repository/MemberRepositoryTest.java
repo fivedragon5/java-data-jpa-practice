@@ -1,6 +1,7 @@
 package fivedragons.data.jpa.repository;
 
 import fivedragons.data.jpa.entity.Member;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,5 +47,21 @@ class MemberRepositoryTest {
         assertEquals(result.size(), 1);
         assertEquals(result.get(0).getUsername(), "fad");
         assertEquals(result.get(0).getAge(), 20);
+    }
+
+    @Test
+    void testNamedQuery() {
+        // given
+        Member m1 = new Member("AA", 10);
+        Member m2 = new Member("BB", 10);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        // when
+        List<Member> result = memberRepository.findByUsername("AA");
+        Member findMemer = result.get(0);
+
+        // then
+        Assertions.assertEquals(findMemer, m1);
     }
 }
