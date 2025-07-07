@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -132,5 +133,24 @@ class MemberRepositoryTest {
 
         // then
         Assertions.assertEquals(result.size(), 2);
+    }
+
+    @Test
+    void returnType() {
+        // given
+        Member m1 = new Member("AA", 10);
+        Member m2 = new Member("BB", 10);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        // when
+        List<Member> result = memberRepository.findListByUsername("!@#$!@#");
+        Member result2 = memberRepository.findMemberByUsername("!@#@!#");
+        Optional<Member> result3 = memberRepository.findOptionalByUsername("!@#@!#@!#");
+
+        // then
+        Assertions.assertEquals(result, List.of()); // 반환 타입이 컬렉션 이고 값이 없을 경우, empty Collection 반환
+        Assertions.assertEquals(result2, null); // 단건 조회일 경우 null 반환
+        Assertions.assertEquals(result3, Optional.empty()); // Optional 타입일 경우 Optional.empty() 반환
     }
 }
