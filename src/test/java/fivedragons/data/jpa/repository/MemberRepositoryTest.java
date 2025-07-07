@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -116,5 +117,20 @@ class MemberRepositoryTest {
         assertEquals(memberDto.getUsername(), m1.getUsername());
         assertEquals(memberDto.getId(), m1.getId());
         assertEquals(memberDto.getTeamName(), team.getName());
+    }
+
+    @Test
+    void findByNames() {
+        // given
+        Member m1 = new Member("AA", 10);
+        Member m2 = new Member("BB", 10);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        // when
+        List<Member> result = memberRepository.findByNames(Arrays.asList("AA", "BB"));
+
+        // then
+        Assertions.assertEquals(result.size(), 2);
     }
 }
