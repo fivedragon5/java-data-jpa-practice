@@ -110,4 +110,29 @@ class MemberJpaRepositoryTest {
         // then
         Assertions.assertEquals(findMemer, m1);
     }
+
+    @Test
+    void findByUsername() {
+        // given
+        memberJpaRepository.save(new Member("AA1", 10));
+        memberJpaRepository.save(new Member("AA2", 10));
+        memberJpaRepository.save(new Member("AA3", 10));
+        memberJpaRepository.save(new Member("AA4", 10));
+        memberJpaRepository.save(new Member("AA5", 10));
+
+        int age = 10;
+        int offset = 1;
+        int limit = 3;
+
+
+        // when
+        List<Member> members = memberJpaRepository.findByPage(age, offset, limit);
+        long totalCount = memberJpaRepository.totalCount(age);
+
+        // then
+        assertEquals(members.size(), 3);
+        assertEquals(totalCount, 5);
+    }
+
+
 }
