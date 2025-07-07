@@ -64,4 +64,20 @@ class MemberRepositoryTest {
         // then
         Assertions.assertEquals(findMemer, m1);
     }
+
+    @Test
+    void findUser() {
+        // given
+        Member m1 = new Member("AA", 10);
+        Member m2 = new Member("BB", 10);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        // when
+        List<Member> result = memberRepository.findUser("AA", 10);
+        Member findMemer = result.get(0);
+
+        // then
+        Assertions.assertEquals(m1, findMemer);
+    }
 }
