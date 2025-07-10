@@ -3,6 +3,8 @@ package fivedragons.data.jpa.repository;
 import fivedragons.data.jpa.dto.MemberDto;
 import fivedragons.data.jpa.entity.Member;
 import fivedragons.data.jpa.entity.Team;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ class MemberRepositoryTest {
 
     @Autowired MemberRepository memberRepository;
     @Autowired TeamRepository teamRepository;
+    @PersistenceContext EntityManager em;
 
     @Test
     void testMember() {
@@ -228,5 +231,25 @@ class MemberRepositoryTest {
 
         // then
         assertEquals(result.get(0).getUsername(), "AA5");
+    }
+
+    @Test
+    void bulkAgePlus() {
+        // given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 40));
+
+        // when
+        int result = memberRepository.bulkAgePlus(20);
+        // bulk 쿼리는 영속성 컨텍스트에 반영되지 않으므로, flush()와 clear()를 호출하여 영속성 컨텍스트를 초기화해야 함
+        // @Modifying 어노테이션을 사용하면 clearAutomatically = true 옵션을 추가하여 자동으로 영속성 컨텍스트를 초기화할 수 있음
+        Member member5 = memberRepository.findByUsername("member5").get(0);
+        System.out.println("member5 = " + member5);
+
+        // then
+        assertEquals(result, 3);
     }
 }
