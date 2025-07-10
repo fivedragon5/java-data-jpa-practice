@@ -2,6 +2,7 @@ package fivedragons.data.jpa.repository;
 
 import fivedragons.data.jpa.dto.MemberDto;
 import fivedragons.data.jpa.entity.Member;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -64,4 +66,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @EntityGraph(attributePaths = {"team"})
     @Query("select m from Member m where m.username = :username")
     List<Member> findEntityGraphByUserName(@Param("username") String username);
+
+    // ReadOnly Query
+    // Hibernate에서 readOnly로 설정하면 성능 최적화에 도움이 될 수 있다.
+    @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
+    Member findReadOnlyByUsername(String username);
 }
