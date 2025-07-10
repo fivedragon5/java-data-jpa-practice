@@ -252,4 +252,63 @@ class MemberRepositoryTest {
         // then
         assertEquals(result, 3);
     }
+
+    @Test
+    void findMemberLazy() {
+        // given
+        // member1 -> teamA | member2 -> teamB
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 20, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        // when N + 1 문제
+        // @EntityGraph를 사용하지 않으면, 프록시 객체가 생성되고, 실제 데이터를 가져오기 위해 추가 쿼리가 발생함
+        List<Member> members = memberRepository.findAll();
+
+        for (Member member : members) {
+            System.out.println("member = " + member);
+            // 프록시 객체를 넣어둠
+            System.out.println("member.teamClass1 = " + member.getTeam().getClass());
+            System.out.println("member.getTeam() = " + member.getTeam().getName());
+        }
+
+        // then
+    }
+
+    @Test
+    void findMemberFetchJoin() {
+        // given
+        // member1 -> teamA | member2 -> teamB
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 20, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        List<Member> members = memberRepository.findMemberFetchJoin();
+
+        for (Member member : members) {
+            System.out.println("member = " + member);
+            // 프록시 객체를 넣어둠
+            System.out.println("member.teamClass1 = " + member.getTeam().getClass());
+            System.out.println("member.getTeam() = " + member.getTeam().getName());
+        }
+
+        // then
+    }
 }
