@@ -18,7 +18,7 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @ToString(of = {"id", "name"})
-public class Team {
+public class Team extends JapBaseEntity {
     @Id @GeneratedValue
     @Column(name = "team_id")
     private Long id;

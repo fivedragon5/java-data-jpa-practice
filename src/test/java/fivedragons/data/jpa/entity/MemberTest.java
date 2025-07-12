@@ -1,9 +1,10 @@
 package fivedragons.data.jpa.entity;
 
+import fivedragons.data.jpa.repository.MemberRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,8 @@ class MemberTest {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired MemberRepository memberRepository;
 
     @Test
     void testEntity() {
@@ -49,6 +52,25 @@ class MemberTest {
         }
     }
 
+    @Test
+    void jpaEventBaseEntity() throws Exception {
+        // given
+        Member member = new Member("member1");
+        memberRepository.save(member); // @PrePersist
 
+        Thread.sleep(1000);
+        member.setUsername("member2");
 
+        em.flush(); // @PreUpdate
+        em.clear();
+
+        // when
+        Member findMember = memberRepository.findById(member.getId()).get();
+
+        // then
+        System.out.println("findMemberCreateDate = " + findMember.getCreateDate());
+        System.out.println("findMemberLastModifiedDate = " + findMember.getLastModifiedDate());
+        System.out.println("findMemberCreatedBy = " + findMember.getCreatedBy());
+        System.out.println("findMemberLastModifiedBy = " + findMember.getLastModifiedBy());
+    }
 }
