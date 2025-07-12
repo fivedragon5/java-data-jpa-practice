@@ -341,4 +341,12 @@ class MemberRepositoryTest {
 
         // then
     }
+    
+    @Test
+    void callCustom() {
+        // given
+        memberRepository.findMemberCustom();
+        // when
+        // then
+    }
 }
