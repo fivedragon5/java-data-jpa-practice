@@ -1,4 +1,4 @@
-# JAVA JPA STUDY
+# JAVA SPRING DATA JPA STUDY
 ### GOAL
 - Spring Data JPA 기초 이해 및 실무 적용해보기
 
