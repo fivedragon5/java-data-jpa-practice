@@ -77,4 +77,11 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Member> findLockByUsername(String username);
+
+    List<UsernameOnly> findProjectionsByUsername(@Param("username") String username);
+
+    @Query("SELECT new fivedragons.data.jpa.repository.UsernameOnlyDto(m.username) FROM Member m WHERE m.username = :username")
+    List<UsernameOnlyDto> findProjectionsDtoByUsername(@Param("username") String username);
+
+    List<NestedClosedProjections> findNestedClosedProjectionsDtoByUsername(@Param("username") String username);
 }

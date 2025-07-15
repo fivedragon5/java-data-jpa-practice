@@ -399,4 +399,72 @@ class MemberRepositoryTest {
         // then
         assertEquals(result.size(), 1);
     }
+
+    @Test
+    void projections() {
+        // given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        List<UsernameOnly> result = memberRepository.findProjectionsByUsername("m1");
+
+        // then
+        Assertions.assertEquals(result.get(0).getUsername(), m1.getUsername() + " " + m1.getAge());
+    }
+
+    @Test
+    void projectionsDto() {
+        // given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        List<UsernameOnlyDto> result = memberRepository.findProjectionsDtoByUsername("m1");
+
+        for (UsernameOnlyDto o : result) {
+            System.out.println("usernameOnly = " + o.getUsername());
+        }
+
+        // then
+        Assertions.assertEquals(result.get(0).getUsername(), m1.getUsername());
+    }
+
+    @Test
+    void nestedClosedProjections() {
+        // given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        List<NestedClosedProjections> result = memberRepository.findNestedClosedProjectionsDtoByUsername("m1");
+
+        for (NestedClosedProjections o : result) {
+            System.out.println("userName = " + o.getUsername() + " teamName = " + o.getTeam().getName());
+        }
+    }
 }
